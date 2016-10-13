@@ -1175,20 +1175,20 @@ public class AppBarLayoutSpring extends LinearLayout {
             int originNew = newOffset;
             final int curOffset = getTopBottomOffsetForScrollingSibling();
             int consumed = 0;
-            /*if (mOffsetSpring != 0 && newOffset < 0) {
+            if (mOffsetSpring != 0 && newOffset < 0) {
                 int newSpringOffset = mOffsetSpring + originNew;
                 if (newSpringOffset < 0) {
                     newOffset = newSpringOffset;
                     newSpringOffset = 0;
                 }
-                updateSpringHeaderHeight(coordinatorLayout, appBarLayout, newSpringOffset);
+                updateSpringOffsetByscroll(coordinatorLayout, appBarLayout, newSpringOffset);
                 consumed = getTopBottomOffsetForScrollingSibling() - originNew;
                 if (newSpringOffset >= 0)
                     return consumed;
-            }*/
+            }
 
             if (mOffsetSpring > 0 && appBarLayout.getHeight() >= mPreHeadHeight && newOffset > 0) {
-                updateSpringHeaderHeight(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
+                updateSpringOffsetByscroll(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
                 consumed = getTopBottomOffsetForScrollingSibling() - originNew;
                 return consumed;
             }
@@ -1226,7 +1226,7 @@ public class AppBarLayoutSpring extends LinearLayout {
                     updateAppBarLayoutDrawableState(coordinatorLayout, appBarLayout, newOffset,
                             newOffset < curOffset ? -1 : 1);
                 } else if (curOffset != minOffset) {
-                    updateSpringHeaderHeight(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
+                    updateSpringOffsetByscroll(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
                     consumed = getTopBottomOffsetForScrollingSibling() - originNew;
                 }
             } else {
@@ -1237,11 +1237,16 @@ public class AppBarLayoutSpring extends LinearLayout {
             return consumed;
         }
 
-        private void updateSpringHeaderHeight(CoordinatorLayout coordinatorLayout, AppBarLayoutSpring appBarLayout, int animatedValue) {
-            if (appBarLayout.getHeight() < mPreHeadHeight || animatedValue < 0) return;
-            mOffsetSpring = animatedValue;
+        private void updateSpringOffsetByscroll(CoordinatorLayout coordinatorLayout, AppBarLayoutSpring appBarLayout, int offset) {
+            if (mSpringRecoverAnimator != null && mSpringRecoverAnimator.isRunning()) mSpringRecoverAnimator.cancel();
+            updateSpringHeaderHeight(coordinatorLayout, appBarLayout, offset);
+        }
+
+        private void updateSpringHeaderHeight(CoordinatorLayout coordinatorLayout, AppBarLayoutSpring appBarLayout, int offset) {
+            if (appBarLayout.getHeight() < mPreHeadHeight || offset < 0) return;
+            mOffsetSpring = offset;
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-            layoutParams.height = mPreHeadHeight + animatedValue;
+            layoutParams.height = mPreHeadHeight + offset;
             appBarLayout.setLayoutParams(layoutParams);
             coordinatorLayout.dispatchDependentViewsChanged(appBarLayout);
         }
