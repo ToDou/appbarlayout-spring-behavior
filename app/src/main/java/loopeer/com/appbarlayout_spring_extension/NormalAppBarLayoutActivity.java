@@ -1,11 +1,16 @@
 package loopeer.com.appbarlayout_spring_extension;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.SpringBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import com.github.mmin18.widget.RealtimeBlurView;
 
 public class NormalAppBarLayoutActivity extends AppCompatActivity {
 
@@ -24,5 +29,17 @@ public class NormalAppBarLayoutActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        final RealtimeBlurView realtimeBlurView = (RealtimeBlurView) findViewById(R.id.real_time_blur_view);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        SpringBehavior springBehavior = (SpringBehavior) ((CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams()).getBehavior();
+        springBehavior.setSpringOffsetCallback(new SpringBehavior.SpringOffsetCallback() {
+            @Override
+            public void springCallback(int offset) {
+                int radius = 20 * (240 - offset > 0 ? 240 - offset : 0) / 240;
+                realtimeBlurView.setBlurRadius(radius);
+            }
+        });
+
     }
 }

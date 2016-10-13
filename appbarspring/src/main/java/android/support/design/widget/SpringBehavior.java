@@ -22,12 +22,17 @@ public class SpringBehavior extends AppBarLayout.Behavior {
         public abstract boolean canDrag(@NonNull AppBarLayout appBarLayout);
     }
 
+    public interface SpringOffsetCallback{
+        void springCallback(int offset);
+    }
+
     private int mOffsetDelta;
 
     private int mOffsetSpring;
     private ValueAnimator mSpringRecoverAnimator;
 
     private int mPreHeadHeight;
+    private SpringOffsetCallback mSpringOffsetCallback;
 
     private boolean mSkipNestedPreScroll;
     private boolean mWasNestedFlung;
@@ -403,6 +408,7 @@ public class SpringBehavior extends AppBarLayout.Behavior {
     private void updateSpringHeaderHeight(CoordinatorLayout coordinatorLayout, AppBarLayout appBarLayout, int offset) {
         if (appBarLayout.getHeight() < mPreHeadHeight || offset < 0) return;
         mOffsetSpring = offset;
+        if (mSpringOffsetCallback != null) mSpringOffsetCallback.springCallback(mOffsetSpring);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         layoutParams.height = mPreHeadHeight + offset;
         appBarLayout.setLayoutParams(layoutParams);
@@ -411,6 +417,14 @@ public class SpringBehavior extends AppBarLayout.Behavior {
 
     public int getOffsetSpring() {
         return mOffsetSpring;
+    }
+
+    public SpringOffsetCallback getSpringOffsetCallback() {
+        return mSpringOffsetCallback;
+    }
+
+    public void setSpringOffsetCallback(SpringOffsetCallback springOffsetCallback) {
+        mSpringOffsetCallback = springOffsetCallback;
     }
 
     @VisibleForTesting
