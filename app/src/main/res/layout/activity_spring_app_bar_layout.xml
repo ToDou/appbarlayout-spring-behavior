@@ -15,7 +15,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <loopeer.com.appbarlayout_spring_extension.springbar.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -36,7 +36,7 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </loopeer.com.appbarlayout_spring_extension.springbar.CollapsingToolbarLayout>
     </loopeer.com.appbarlayout_spring_extension.springbar.AppBarLayoutSpring>
 
     <android.support.design.widget.FloatingActionButton
