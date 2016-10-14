@@ -1,4 +1,4 @@
-# appbarlayout-spring-extension
+# appbarlayout-spring-behavior
 One library contains one behavior help appbarlayout to scrll spring. In the sample have add the realtimeblur test and add tablayout with TabScrimHelper(animate color with CollapsingToolbarLayout).Because of some methods in the Behavior of AppBarLayout not open to the out package. So I set the package name same to the support design.
 
 Screenshot
