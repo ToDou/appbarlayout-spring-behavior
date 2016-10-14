@@ -3,7 +3,6 @@ package android.support.design.widget;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -11,16 +10,10 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
-    private static final int INVALID_POSITION = -1;
-
-    public static abstract class DragCallback {
-        public abstract boolean canDrag(@NonNull AppBarLayout appBarLayout);
-    }
 
     public interface SpringOffsetCallback{
         void springCallback(int offset);
@@ -34,17 +27,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private int mPreHeadHeight;
     private SpringOffsetCallback mSpringOffsetCallback;
 
-    private boolean mSkipNestedPreScroll;
-    private boolean mWasNestedFlung;
-
     private ValueAnimatorCompat mOffsetAnimator;
-
-    private int mOffsetToChildIndexOnLayout = INVALID_POSITION;
-    private boolean mOffsetToChildIndexOnLayoutIsMinHeight;
-    private float mOffsetToChildIndexOnLayoutPerc;
-
-    private WeakReference<View> mLastNestedScrollingChildRef;
-    private DragCallback mOnDragCallback;
 
     public AppBarLayoutSpringBehavior() {
     }
