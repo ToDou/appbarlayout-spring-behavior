@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/a1f1f57f510e75fac3f2fad0cfaf44b1"/>
+                android:src="@mipmap/img_test"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
