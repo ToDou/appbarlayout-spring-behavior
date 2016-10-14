@@ -43,8 +43,6 @@ TabScrimHelper tabScrimHelper = new TabScrimHelper(tabLayout, collapsingToolbarL
 appBarLayout.addOnOffsetChangedListener(tabScrimHelper);
 ```
 
-Thanks for [RealtimeBlurView](https://github.com/mmin18/RealtimeBlurView)
-
 License
 ====
 <pre>
