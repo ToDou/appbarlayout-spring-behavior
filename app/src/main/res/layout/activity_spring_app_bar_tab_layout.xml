@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/img_test"/>
+                android:src="@mipmap/img_test2"/>
 
             <com.github.mmin18.widget.RealtimeBlurView
                 android:id="@+id/real_time_blur_view"
