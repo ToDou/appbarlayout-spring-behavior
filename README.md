@@ -5,7 +5,7 @@ Screenshot
 ====
 First is with spring. Second with blur and TabScrimHelper  
 
-![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_with_blur_tab.gif)  
+![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_blur_tab.gif)  
 
 Installation
 ====
