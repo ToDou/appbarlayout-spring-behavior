@@ -23,6 +23,10 @@
             android:name=".SpringAppBarLayoutActivity"
             android:label="@string/title_activity_spring_app_bar_layout"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SpringAppBarLayoutWithTabActivity"
+            android:label="@string/title_activity_spring_app_bar_tab_layout"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

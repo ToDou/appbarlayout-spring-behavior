@@ -20,4 +20,8 @@ public class MainActivity extends AppCompatActivity {
     public void onSpringAppBarLayoutClick(View view) {
         startActivity(new Intent(this, SpringAppBarLayoutActivity.class));
     }
+
+    public void onSpringTabAppBarLayoutClick(View view) {
+        startActivity(new Intent(this, SpringAppBarLayoutWithTabActivity.class));
+    }
 }

@@ -2,6 +2,7 @@
     <string name="app_name">AppBarLayout-spring-extension</string>
     <string name="title_activity_normal_app_bar_layout">NormalAppBarLayoutActivity</string>
     <string name="title_activity_spring_app_bar_layout">SpringAppBarLayoutActivity</string>
+    <string name="title_activity_spring_app_bar_tab_layout">SpringAppBarLayoutTabActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

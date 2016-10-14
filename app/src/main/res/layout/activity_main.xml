@@ -22,4 +22,10 @@
         android:padding="@dimen/activity_horizontal_margin"
         android:text="Spring AppbarLayout"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onSpringTabAppBarLayoutClick"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="Spring with Tab AppbarLayout"/>
 </LinearLayout>
