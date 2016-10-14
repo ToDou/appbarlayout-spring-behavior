@@ -3,9 +3,9 @@ One library contains one behavior help appbarlayout to scrll spring. In the samp
 
 Screenshot
 ====
-First is with spring. Second with blur and TabScrimHelper
-![](/screenshot/appbar_spring.gif)  
-![](/screenshot/appbar_spring_with_blur_tab.gif)  
+First is with spring. Second with blur and TabScrimHelper  
+
+![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_with_blur_tab.gif)  
 
 Installation
 ====
