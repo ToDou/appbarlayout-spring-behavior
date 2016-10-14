@@ -30,13 +30,6 @@
                 android:scaleType="centerCrop"
                 android:src="@mipmap/img_test"/>
 
-            <com.github.mmin18.widget.RealtimeBlurView
-                android:id="@+id/real_time_blur_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:realtimeBlurRadius="20dp"
-                app:realtimeOverlayColor="@android:color/transparent" />
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
