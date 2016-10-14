@@ -29,17 +29,6 @@ public class NormalAppBarLayoutActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        final RealtimeBlurView realtimeBlurView = (RealtimeBlurView) findViewById(R.id.real_time_blur_view);
-
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
-        SpringBehavior springBehavior = (SpringBehavior) ((CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams()).getBehavior();
-        springBehavior.setSpringOffsetCallback(new SpringBehavior.SpringOffsetCallback() {
-            @Override
-            public void springCallback(int offset) {
-                int radius = 20 * (240 - offset > 0 ? 240 - offset : 0) / 240;
-                realtimeBlurView.setBlurRadius(radius);
-            }
-        });
 
     }
 }
