@@ -1,16 +1,11 @@
 package loopeer.com.appbarlayout_spring_extension;
 
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.SpringBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import com.github.mmin18.widget.RealtimeBlurView;
 
 public class NormalAppBarLayoutActivity extends AppCompatActivity {
 
@@ -20,6 +15,7 @@ public class NormalAppBarLayoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_normal_app_bar_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

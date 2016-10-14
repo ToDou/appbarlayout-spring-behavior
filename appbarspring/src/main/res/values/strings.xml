@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AppbarSpring</string>
+
+    <string name="appbar_spring_behavior">android.support.design.widget.AppBarLayoutSpringBehavior</string>
 </resources>

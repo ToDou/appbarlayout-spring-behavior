@@ -14,7 +14,7 @@ import android.view.animation.Interpolator;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class SpringBehavior extends AppBarLayout.Behavior {
+public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
     private static final int INVALID_POSITION = -1;
 
@@ -46,10 +46,10 @@ public class SpringBehavior extends AppBarLayout.Behavior {
     private WeakReference<View> mLastNestedScrollingChildRef;
     private DragCallback mOnDragCallback;
 
-    public SpringBehavior() {
+    public AppBarLayoutSpringBehavior() {
     }
 
-    public SpringBehavior(Context context, AttributeSet attrs) {
+    public AppBarLayoutSpringBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

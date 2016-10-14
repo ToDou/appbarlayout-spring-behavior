@@ -13,14 +13,7 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return ItemFragment.newInstance(20);
-            case 1:
-                return ItemFragment.newInstance(3);
-
-        }
-        return ItemFragment.newInstance(10);
+        return ItemFragment.newInstance();
     }
 
     @Override
