@@ -5,10 +5,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 
 public class TabScrimHelper implements AppBarLayout.OnOffsetChangedListener {
-    private static final String TAG = "TabScrimBehavior";
     private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;
 
     private TabLayout mTabLayout;
@@ -51,7 +49,6 @@ public class TabScrimHelper implements AppBarLayout.OnOffsetChangedListener {
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.e(TAG, " " + verticalOffset);
         setScrimsShown(mToolbarLayout.getHeight() + verticalOffset < mToolbarLayout.getScrimVisibleHeightTrigger());
 
     }
