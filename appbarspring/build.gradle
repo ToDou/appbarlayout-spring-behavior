@@ -30,8 +30,8 @@ dependencies {
 }
 
 
-def siteUrl = 'https://github.com/ToDou/appbarlayout-spring-extension'      // 项目的主页
-def gitUrl = 'https://github.com/ToDou/appbarlayout-spring-extension.git'   // Git仓库的url
+def siteUrl = 'https://github.com/ToDou/appbarlayout-spring-behavior'      // 项目的主页
+def gitUrl = 'https://github.com/ToDou/appbarlayout-spring-behavior.git'   // Git仓库的url
 group = "com.github.todou"
 install {
     repositories.mavenInstaller {
