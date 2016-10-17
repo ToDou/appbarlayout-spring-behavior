@@ -24,4 +24,8 @@ public class MainActivity extends AppCompatActivity {
     public void onSpringTabAppBarLayoutClick(View view) {
         startActivity(new Intent(this, SpringAppBarLayoutWithTabActivity.class));
     }
+
+    public void onFlingFixTabAppBarLayoutClick(View view) {
+        startActivity(new Intent(this, AppBarFlingFixTabActivity.class));
+    }
 }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
@@ -36,14 +37,33 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         super(context, attrs);
     }
 
-
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child, View directTargetChild, View target, int nestedScrollAxes) {
-        boolean started = super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes);
+        final boolean started = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0
+                && child.hasScrollableChildren()
+                && parent.getHeight() - directTargetChild.getHeight() <= child.getHeight();
+
+        if (started && mOffsetAnimator != null) {
+            mOffsetAnimator.cancel();
+        }
+
         if (started && mSpringRecoverAnimator != null && mSpringRecoverAnimator.isRunning()) {
             mSpringRecoverAnimator.cancel();
         }
+
+        // A new nested scroll has started so clear out the previous ref
+        setLastNestedScrollingChildRef();
         return started;
+    }
+
+    private void setLastNestedScrollingChildRef() {
+        try {
+            Field field = AppBarLayout.Behavior.class.getDeclaredField("mLastNestedScrollingChildRef");
+            field.setAccessible(true);
+            field.set(this, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
