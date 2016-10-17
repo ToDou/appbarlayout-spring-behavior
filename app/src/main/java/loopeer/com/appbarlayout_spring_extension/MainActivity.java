@@ -26,6 +26,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onFlingFixTabAppBarLayoutClick(View view) {
-        startActivity(new Intent(this, AppBarFlingFixTabActivity.class));
+        startActivity(new Intent(this, AppBarFlingFixActivity.class));
     }
 }

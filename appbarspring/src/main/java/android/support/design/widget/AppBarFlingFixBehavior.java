@@ -65,23 +65,29 @@ public class AppBarFlingFixBehavior extends AppBarLayout.Behavior {
             // up to our 'collapsed' offset
             if (velocityY < 0) {
                 // We're scrolling down
-                final int targetScroll = -child.getTotalScrollRange()
+                final int targetScroll = /*-child.getTotalScrollRange()*/
                         + child.getDownNestedPreScrollRange();
+                animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
+                flung = true;
+/*
                 if (getTopBottomOffsetForScrollingSibling() < targetScroll) {
                     // If we're currently not expanded more than the target scroll, we'll
                     // animate a fling
                     animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
                     flung = true;
                 }
+*/
             } else {
                 // We're scrolling up
                 final int targetScroll = -child.getUpNestedPreScrollRange();
-                if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
+                animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
+                flung = true;
+                /*if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
                     // If we're currently not expanded less than the target scroll, we'll
                     // animate a fling
                     animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
                     flung = true;
-                }
+                }*/
             }
         }
 
