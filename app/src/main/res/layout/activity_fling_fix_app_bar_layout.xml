@@ -49,6 +49,6 @@
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@android:drawable/ic_dialog_email"/>
 
-    <include layout="@layout/content_normal_app_bar_layout"/>
+    <include layout="@layout/content_fling_fix_app_bar_layout"/>
 
 </android.support.design.widget.CoordinatorLayout>

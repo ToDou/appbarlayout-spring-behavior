@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<android.support.design.widget.NestedFixFlingScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="loopeer.com.appbarlayout_spring_extension.SpringAppBarLayoutActivity"
-    tools:showIn="@layout/activity_spring_app_bar_layout">
+    tools:context="loopeer.com.appbarlayout_spring_extension.NormalAppBarLayoutActivity"
+    tools:showIn="@layout/activity_normal_app_bar_layout">
 
     <TextView
         android:layout_width="wrap_content"
@@ -15,4 +15,4 @@
         android:layout_margin="@dimen/text_margin"
         android:text="@string/large_text"/>
 
-</android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.NestedFixFlingScrollView>

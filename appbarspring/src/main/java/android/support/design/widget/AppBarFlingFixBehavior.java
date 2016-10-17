@@ -35,16 +35,15 @@ public class AppBarFlingFixBehavior extends AppBarLayout.Behavior {
             mOffsetAnimator.cancel();
         }
 
-        // A new nested scroll has started so clear out the previous ref
-        setLastNestedScrollingChildRef();
+        setLastNestedScrollingChildRef(null);
         return started;
     }
 
-    private void setLastNestedScrollingChildRef() {
+    private void setLastNestedScrollingChildRef(Object o) {
         try {
             Field field = AppBarLayout.Behavior.class.getDeclaredField("mLastNestedScrollingChildRef");
             field.setAccessible(true);
-            field.set(this, null);
+            field.set(this, o);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,43 +56,37 @@ public class AppBarFlingFixBehavior extends AppBarLayout.Behavior {
         boolean flung = false;
 
         if (!consumed) {
-            // It has been consumed so let's fling ourselves
             flung = fling(coordinatorLayout, child, -child.getTotalScrollRange(),
                     0, -velocityY);
         } else {
-            // If we're scrolling up and the child also consumed the fling. We'll fake scroll
-            // up to our 'collapsed' offset
             if (velocityY < 0) {
-                // We're scrolling down
-                final int targetScroll = /*-child.getTotalScrollRange()*/
+                final int targetScroll =
                         + child.getDownNestedPreScrollRange();
                 animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
                 flung = true;
-/*
-                if (getTopBottomOffsetForScrollingSibling() < targetScroll) {
-                    // If we're currently not expanded more than the target scroll, we'll
-                    // animate a fling
+            } else {
+                final int targetScroll = -child.getUpNestedPreScrollRange();
+                if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
                     animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
                     flung = true;
                 }
-*/
-            } else {
-                // We're scrolling up
-                final int targetScroll = -child.getUpNestedPreScrollRange();
-                animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
-                flung = true;
-                /*if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
-                    // If we're currently not expanded less than the target scroll, we'll
-                    // animate a fling
-                    animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
-                    flung = true;
-                }*/
             }
         }
 
-//        mWasNestedFlung = flung;
+        setWasNestedFlung(flung);
         return flung;
     }
+
+    private void setWasNestedFlung(boolean o) {
+        try {
+            Field field = AppBarLayout.Behavior.class.getDeclaredField("mWasNestedFlung");
+            field.setAccessible(true);
+            field.set(this, o);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void animateOffsetTo(final CoordinatorLayout coordinatorLayout,
                                  final AppBarLayout child, final int offset, float velocity) {

@@ -72,6 +72,44 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         checkShouldSpringRecover(coordinatorLayout, abl);
     }
 
+    @Override
+    public boolean onNestedFling(final CoordinatorLayout coordinatorLayout,
+                                 final AppBarLayout child, View target, float velocityX, float velocityY,
+                                 boolean consumed) {
+        boolean flung = false;
+
+        if (!consumed) {
+            flung = fling(coordinatorLayout, child, -child.getTotalScrollRange(),
+                    0, -velocityY);
+        } else {
+            if (velocityY < 0) {
+                final int targetScroll =
+                        + child.getDownNestedPreScrollRange();
+                animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
+                flung = true;
+            } else {
+                final int targetScroll = -child.getUpNestedPreScrollRange();
+                if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
+                    animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
+                    flung = true;
+                }
+            }
+        }
+
+        setWasNestedFlung(flung);
+        return flung;
+    }
+
+    private void setWasNestedFlung(boolean o) {
+        try {
+            Field field = AppBarLayout.Behavior.class.getDeclaredField("mWasNestedFlung");
+            field.setAccessible(true);
+            field.set(this, o);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void checkShouldSpringRecover(CoordinatorLayout coordinatorLayout, AppBarLayout abl) {
         if (mOffsetSpring > 0) animateRecoverBySpring(coordinatorLayout, abl);
     }
