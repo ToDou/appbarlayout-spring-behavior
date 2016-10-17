@@ -9,7 +9,7 @@ One library contains one behavior help appbarlayout to scrll spring. In the samp
 
 Screenshot
 ====
-First is with spring. Second with blur and TabScrimHelper  
+First is with spring. Second with blur and TabScrimHelper.Third with fling fix  
 
 ![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_blur_tab.gif) ![](/screenshot/appbar_scrollview_fling_fix.gif)
 
