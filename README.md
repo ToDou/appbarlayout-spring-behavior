@@ -11,13 +11,13 @@ Screenshot
 ====
 First is with spring. Second with blur and TabScrimHelper  
 
-![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_blur_tab.gif)  
+![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_blur_tab.gif) ![](/screenshot/appbar_scrollview_fling_fix.gif)
 
 Installation
 ====
 ```groovy
 dependencies {
-    compile 'com.github.todou:appbarspring:1.0.0'
+    compile 'com.github.todou:appbarspring:1.0.1'
 }
 ```
 Usages
