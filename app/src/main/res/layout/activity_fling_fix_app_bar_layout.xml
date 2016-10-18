@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="@bool/out_fits_system_windows"
     tools:context="loopeer.com.appbarlayout_spring_extension.NormalAppBarLayoutActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -28,6 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax"
                 android:src="@mipmap/img_test"/>
 
             <android.support.v7.widget.Toolbar
