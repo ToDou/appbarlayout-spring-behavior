@@ -17,7 +17,7 @@ Installation
 ====
 ```groovy
 dependencies {
-    compile 'com.github.todou:appbarspring:1.0.2'
+    compile 'com.github.todou:appbarspring:1.0.3'
 }
 ```
 Usages
