@@ -40,6 +40,25 @@ import android.widget.ScrollView;
 
 import java.util.List;
 
+/**
+ Add this class to fix the scroll view can not fling by the action up has checked by mIsBeingDragged
+
+ case MotionEvent.ACTION_UP:
+ if (mIsBeingDragged) {
+ final VelocityTracker velocityTracker = mVelocityTracker;
+ velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+ int initialVelocity = (int) VelocityTrackerCompat.getYVelocity(velocityTracker,
+ mActivePointerId);
+
+ if ((Math.abs(initialVelocity) > mMinimumVelocity)) {
+ flingWithNestedDispatch(-initialVelocity);
+ } else if (mScroller.springBack(getScrollX(), getScrollY(), 0, 0, 0,
+ getScrollRange())) {
+ ViewCompat.postInvalidateOnAnimation(this);
+ }
+ }
+ */
+
 public class NestedFixFlingScrollView extends FrameLayout implements NestedScrollingParent,
         NestedScrollingChild, ScrollingView {
     static final int ANIMATED_SCROLL_GAP = 250;
