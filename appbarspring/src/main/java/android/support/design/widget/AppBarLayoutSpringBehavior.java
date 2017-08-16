@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -16,7 +17,7 @@ import java.util.List;
 public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
 
-    public interface SpringOffsetCallback{
+    public interface SpringOffsetCallback {
         void springCallback(int offset);
     }
 
@@ -84,7 +85,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         } else {
             if (velocityY < 0) {
                 final int targetScroll =
-                        + child.getDownNestedPreScrollRange();
+                        +child.getDownNestedPreScrollRange();
                 animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
                 flung = true;
             } else {
@@ -114,24 +115,37 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         if (mOffsetSpring > 0) animateRecoverBySpring(coordinatorLayout, abl);
     }
 
-    private void animateRecoverBySpring(final CoordinatorLayout coordinatorLayout, final AppBarLayout abl) {
-        if (mSpringRecoverAnimator == null) {
-            mSpringRecoverAnimator = new ValueAnimator();
-            mSpringRecoverAnimator.setDuration(200);
-            mSpringRecoverAnimator.setInterpolator(new DecelerateInterpolator());
-            mSpringRecoverAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    updateSpringHeaderHeight(coordinatorLayout, abl, (int) animation.getAnimatedValue());
-                }
-            });
-        } else {
-            if (mSpringRecoverAnimator.isRunning()) {
-                mSpringRecoverAnimator.cancel();
-            }
+    @Override
+    public boolean onTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                checkShouldSpringRecover(parent, child);
+                break;
         }
-        mSpringRecoverAnimator.setIntValues(mOffsetSpring, 0);
+        return super.onTouchEvent(parent, child, ev);
+    }
+
+
+    private void animateRecoverBySpring(final CoordinatorLayout coordinatorLayout, final AppBarLayout abl) {
+//        if (mSpringRecoverAnimator == null) {
+        mSpringRecoverAnimator = ValueAnimator.ofInt(mOffsetSpring, 0);
+        mSpringRecoverAnimator.setDuration(200);
+        mSpringRecoverAnimator.setInterpolator(new DecelerateInterpolator());
+        mSpringRecoverAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                updateSpringHeaderHeight(coordinatorLayout, abl, (int) animation.getAnimatedValue());
+            }
+        });
         mSpringRecoverAnimator.start();
+//        } else {
+//            if (mSpringRecoverAnimator.isRunning()) {
+//                mSpringRecoverAnimator.cancel();
+//            }
+//        }
+//        mSpringRecoverAnimator.setIntValues(mOffsetSpring, 0);
+
     }
 
     private static boolean checkFlag(final int flags, final int check) {
