@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion Integer.parseInt(compile_sdk_version)
-    buildToolsVersion build_tools_version
+    compileSdkVersion configs.compileSdkVersion
+    buildToolsVersion configs.buildToolsVersion
 
     defaultConfig {
         applicationId "loopeer.com.appbarlayout_spring_extension"
-        minSdkVersion min_sdk_version
-        targetSdkVersion target_sdk_version
-        versionCode Integer.parseInt(version_code)
-        versionName version_name
+        minSdkVersion configs.minSdkVersion
+        targetSdkVersion configs.targetSdkVersion
+        versionCode configs.versionCode
+        versionName configs.versionName
 
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true    // Enable RS support
@@ -29,9 +29,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':appbarspring')
+    implementation 'com.github.mmin18:realtimeblurview:1.0.4'
+    implementation libs.appcompatV7
 
-    compile project(':appbarspring')
-    compile 'com.github.mmin18:realtimeblurview:1.0.4'
-    compile 'com.android.support:support-v4:' + support_version
 }
