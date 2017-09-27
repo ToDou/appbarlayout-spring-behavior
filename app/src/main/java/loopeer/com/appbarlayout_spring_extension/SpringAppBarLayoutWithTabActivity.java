@@ -19,15 +19,15 @@ public class SpringAppBarLayoutWithTabActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spring_app_bar_tab_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
 
-        final RealtimeBlurView realtimeBlurView = (RealtimeBlurView) findViewById(R.id.real_time_blur_view);
+        final RealtimeBlurView realtimeBlurView = findViewById(R.id.real_time_blur_view);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        AppBarLayout appBarLayout = findViewById(R.id.app_bar);
         AppBarLayoutSpringBehavior springBehavior = (AppBarLayoutSpringBehavior) ((CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams()).getBehavior();
         springBehavior.setSpringOffsetCallback(new AppBarLayoutSpringBehavior.SpringOffsetCallback() {
             @Override
@@ -37,8 +37,8 @@ public class SpringAppBarLayoutWithTabActivity extends AppCompatActivity {
             }
         });
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.tabs_viewpager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        ViewPager viewPager = findViewById(R.id.tabs_viewpager);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
         TabScrimHelper tabScrimHelper = new TabScrimHelper(tabLayout, collapsingToolbarLayout);

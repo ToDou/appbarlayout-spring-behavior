@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.VisibleForTesting;
+import android.support.v4.math.MathUtils;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -28,7 +29,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private int mPreHeadHeight;
     private SpringOffsetCallback mSpringOffsetCallback;
 
-    private ValueAnimatorCompat mOffsetAnimator;
+    private ValueAnimator mOffsetAnimator;
 
     public AppBarLayoutSpringBehavior() {
     }
@@ -203,7 +204,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
                         ? snapBottom
                         : snapTop;
                 animateOffsetTo(coordinatorLayout, abl,
-                        MathUtils.constrain(newOffset, -abl.getTotalScrollRange(), 0), 0);
+                        MathUtils.clamp(newOffset, -abl.getTotalScrollRange(), 0), 0);
             }
         }
     }
@@ -235,13 +236,13 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         }
 
         if (mOffsetAnimator == null) {
-            mOffsetAnimator = ViewUtils.createAnimator();
+            mOffsetAnimator = new ValueAnimator();
             mOffsetAnimator.setInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR);
-            mOffsetAnimator.addUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
+            mOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimatorCompat animator) {
+                public void onAnimationUpdate(ValueAnimator animator) {
                     setHeaderTopBottomOffset(coordinatorLayout, child,
-                            animator.getAnimatedIntValue());
+                            (Integer) animator.getAnimatedValue());
                 }
             });
         } else {
@@ -291,7 +292,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
             // If we have some scrolling range, and we're currently within the min and max
             // offsets, calculate a new offset
 
-            newOffset = MathUtils.constrain(newOffset, minOffset, maxOffset);
+            newOffset = MathUtils.clamp(newOffset, minOffset, maxOffset);
 
             if (curOffset != newOffset) {
                 final int interpolatedOffset = appBarLayout.hasChildWithInterpolator()

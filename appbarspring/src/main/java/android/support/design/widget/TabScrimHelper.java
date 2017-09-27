@@ -1,8 +1,10 @@
 package android.support.design.widget;
 
 
+import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.renderscript.Sampler;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 
@@ -14,7 +16,7 @@ public class TabScrimHelper implements AppBarLayout.OnOffsetChangedListener {
     private long mScrimAnimationDuration;
     private int mScrimAlpha;
     private boolean mScrimsAreShown;
-    private ValueAnimatorCompat mScrimAnimator;
+    private ValueAnimator mScrimAnimator;
     private final int mNormalColor;
     private final int mSelectedColor;
     private int mCollapseTabSelectTextColor;
@@ -70,16 +72,16 @@ public class TabScrimHelper implements AppBarLayout.OnOffsetChangedListener {
 
     private void animateScrim(int targetAlpha) {
         if (mScrimAnimator == null) {
-            mScrimAnimator = ViewUtils.createAnimator();
+            mScrimAnimator = new ValueAnimator();
             mScrimAnimator.setDuration(mScrimAnimationDuration);
             mScrimAnimator.setInterpolator(
                     targetAlpha > mScrimAlpha
                             ? AnimationUtils.FAST_OUT_LINEAR_IN_INTERPOLATOR
                             : AnimationUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR);
-            mScrimAnimator.addUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
+            mScrimAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimatorCompat animator) {
-                    setScrimAlpha(animator.getAnimatedIntValue());
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    setScrimAlpha((Integer) animator.getAnimatedValue());
                 }
             });
         } else if (mScrimAnimator.isRunning()) {

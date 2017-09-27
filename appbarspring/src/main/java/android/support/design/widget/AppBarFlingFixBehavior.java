@@ -1,5 +1,6 @@
 package android.support.design.widget;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
@@ -8,10 +9,14 @@ import android.view.View;
 
 import java.lang.reflect.Field;
 
+/**
+ * Deprecated the design library has fix the fling problem by the new version
+ */
+@Deprecated
 public class AppBarFlingFixBehavior extends AppBarLayout.Behavior {
     private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
 
-    private ValueAnimatorCompat mOffsetAnimator;
+    private ValueAnimator mOffsetAnimator;
 
     public AppBarFlingFixBehavior() {
     }
@@ -115,13 +120,13 @@ public class AppBarFlingFixBehavior extends AppBarLayout.Behavior {
         }
 
         if (mOffsetAnimator == null) {
-            mOffsetAnimator = ViewUtils.createAnimator();
+            mOffsetAnimator = new ValueAnimator();
             mOffsetAnimator.setInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR);
-            mOffsetAnimator.addUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
+            mOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimatorCompat animator) {
+                public void onAnimationUpdate(ValueAnimator animator) {
                     setHeaderTopBottomOffset(coordinatorLayout, child,
-                            animator.getAnimatedIntValue());
+                            (Integer) animator.getAnimatedValue());
                 }
             });
         } else {

@@ -33,5 +33,6 @@ dependencies {
     implementation project(':appbarspring')
     implementation 'com.github.mmin18:realtimeblurview:1.0.4'
     implementation libs.appcompatV7
+    implementation libs.design
 
 }

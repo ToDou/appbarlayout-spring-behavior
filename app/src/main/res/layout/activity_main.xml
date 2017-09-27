@@ -28,11 +28,4 @@
         android:onClick="onSpringTabAppBarLayoutClick"
         android:padding="@dimen/activity_horizontal_margin"
         android:text="Spring with Tab AppbarLayout"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onFlingFixTabAppBarLayoutClick"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:text="Fling fix AppbarLayout"/>
 </LinearLayout>
