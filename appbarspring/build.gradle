@@ -24,3 +24,5 @@ dependencies {
     implementation libs.appcompatV7
     implementation libs.design
 }
+
+apply from: 'bintray.gradle'
