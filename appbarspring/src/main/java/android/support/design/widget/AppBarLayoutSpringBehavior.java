@@ -9,7 +9,6 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.math.MathUtils;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -20,7 +19,6 @@ import static android.support.v4.view.ViewCompat.TYPE_NON_TOUCH;
 public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private static final String TAG = "SpringBehav";
     private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
-    private View mTarget;
 
     public interface SpringOffsetCallback {
         void springCallback(int offset);
@@ -45,11 +43,20 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child, View directTargetChild, View target, int nestedScrollAxes, int type) {
         final boolean started = super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type);
-        mTarget = target;
         if (started && mSpringRecoverAnimator != null && mSpringRecoverAnimator.isRunning()) {
             mSpringRecoverAnimator.cancel();
         }
+        resetFlingAnimator();
         return started;
+    }
+
+    private void resetFlingAnimator() {
+        if (mFlingAnimator != null) {
+            if (mFlingAnimator.isRunning()) {
+                mFlingAnimator.cancel();
+            }
+            mFlingAnimator = null;
+        }
     }
 
     @Override
@@ -63,13 +70,9 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     @Override
     public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout abl, View target, int type) {
         super.onStopNestedScroll(coordinatorLayout, abl, target, type);
+
         if (type == TYPE_NON_TOUCH) {
-            if (mFlingAnimator != null) {
-                if (mFlingAnimator.isRunning()) {
-                    mFlingAnimator.cancel();
-                }
-                mFlingAnimator = null;
-            }
+            resetFlingAnimator();
         }
         checkShouldSpringRecover(coordinatorLayout, abl);
     }
@@ -317,10 +320,6 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         consumed = getTopBottomOffsetForScrollingSibling() - originNew;
 
         return consumed;
-    }
-
-    private int getMaxSpringHeight() {
-        return mPreHeadHeight / 2;
     }
 
     @Override
