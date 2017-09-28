@@ -5,7 +5,7 @@ One library contains one behavior help appbarlayout to scroll spring. In the sam
 
 Screenshot
 ====
-First is with spring. Second with blur and TabScrimHelper.Third with fling fix  
+First is with spring. Second with blur and TabScrimHelper.
 
 |H|H|
 |---|---|
@@ -20,7 +20,7 @@ dependencies {
 ```
 Usages
 ====
-####AppBarLayout-Spring
+#### AppBarLayout-Spring
 ```xml
 <android.support.design.widget.AppBarLayout
         ...
@@ -47,18 +47,6 @@ With the tablayout you can add **TabScrimHelper** to let TabLayout animate color
 TabScrimHelper tabScrimHelper = new TabScrimHelper(tabLayout, collapsingToolbarLayout);
 appBarLayout.addOnOffsetChangedListener(tabScrimHelper);
 ```
-####AppBarLayout-Fling Fix
-Maybe you will find the appbar fling when scroll down is not smooth. You can try this appbar fling fix behavior:
-```xml
-<android.support.design.widget.AppBarLayout
-        ...
-        app:layout_behavior="@string/appbar_fling_fix_behavior"
-        ...>
-        ...
-</android.support.design.widget.AppBarLayout>
-```
-####NestScrollView-Fling Fix
-To let NestScrollView fling when scroll up.Just use the **NestedFixFlingScrollView**
 
 License
 ====
