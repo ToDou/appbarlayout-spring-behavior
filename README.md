@@ -1,9 +1,5 @@
 # appbarlayout-spring-behavior
-One library contains one behavior help appbarlayout to scroll spring. In the sample have add the realtimeblur test and add tablayout with TabScrimHelper(animate color with CollapsingToolbarLayout).Because of some methods in the Behavior of AppBarLayout not open to the out package. So I set the package name same to the support design.And add one fling_fix_behavior to fix the appbarlayout to scroll down fling. Also add one NestedFixFlingScrollView to fix NestedScrollView fling bug.
-
-   * AppBarLayout Spring
-   * AppBarLayout Fling fix
-   * NestedScrollView Fling Fix
+One library contains one behavior help appbarlayout to scroll spring. In the sample have add the realtimeblur test and add tablayout with TabScrimHelper(animate color with CollapsingToolbarLayout).Because of some methods in the Behavior of AppBarLayout not open to the out package. So I set the package name same to the support design.
 
 [Download Sample](https://github.com/ToDou/appbarlayout-spring-behavior/releases)
 
@@ -11,7 +7,9 @@ Screenshot
 ====
 First is with spring. Second with blur and TabScrimHelper.Third with fling fix  
 
-![](/screenshot/appbar_spring.gif) ![](/screenshot/appbar_spring_blur_tab.gif)
+|H|H|H|
+|---|---|
+|![](/screenshot/appbar_spring.gif)|![](/screenshot/appbar_spring_blur_tab.gif)|
 
 Installation
 ====
