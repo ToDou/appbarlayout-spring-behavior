@@ -1,5 +1,7 @@
 package android.support.design.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
@@ -7,17 +9,20 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.math.MathUtils;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-
-import java.lang.reflect.Field;
 import java.util.List;
 
-public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
-    private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
+import static android.support.v4.view.ViewCompat.TYPE_NON_TOUCH;
 
-    public interface SpringOffsetCallback{
+public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
+    private static final String TAG = "SpringBehav";
+    private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
+    private View mTarget;
+
+    public interface SpringOffsetCallback {
         void springCallback(int offset);
     }
 
@@ -25,10 +30,9 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
 
     private int mOffsetSpring;
     private ValueAnimator mSpringRecoverAnimator;
-
+    private ValueAnimator mFlingAnimator;
     private int mPreHeadHeight;
     private SpringOffsetCallback mSpringOffsetCallback;
-
     private ValueAnimator mOffsetAnimator;
 
     public AppBarLayoutSpringBehavior() {
@@ -39,80 +43,66 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     }
 
     @Override
-    public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child, View directTargetChild, View target, int nestedScrollAxes) {
-        final boolean started = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0
-                && child.hasScrollableChildren()
-                && parent.getHeight() - directTargetChild.getHeight() <= child.getHeight();
-
-        if (started && mOffsetAnimator != null) {
-            mOffsetAnimator.cancel();
-        }
-
+    public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child, View directTargetChild, View target, int nestedScrollAxes, int type) {
+        final boolean started = super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type);
+        mTarget = target;
         if (started && mSpringRecoverAnimator != null && mSpringRecoverAnimator.isRunning()) {
             mSpringRecoverAnimator.cancel();
         }
-
-        // A new nested scroll has started so clear out the previous ref
-        setLastNestedScrollingChildRef();
         return started;
     }
 
-    private void setLastNestedScrollingChildRef() {
-        try {
-            Field field = AppBarLayout.Behavior.class.getDeclaredField("mLastNestedScrollingChildRef");
-            field.setAccessible(true);
-            field.set(this, null);
-        } catch (Exception e) {
-            e.printStackTrace();
+    @Override
+    public void onNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
+        if (dyUnconsumed < 0) {
+            setHeaderTopBottomOffset(coordinatorLayout, child,
+                    getTopBottomOffsetForScrollingSibling() - dyUnconsumed, -child.getDownNestedScrollRange(), 0, type);
         }
     }
 
     @Override
-    public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout abl, View target) {
-        super.onStopNestedScroll(coordinatorLayout, abl, target);
-        checkShouldSpringRecover(coordinatorLayout, abl);
-    }
-
-    @Override
-    public boolean onNestedFling(final CoordinatorLayout coordinatorLayout,
-                                 final AppBarLayout child, View target, float velocityX, float velocityY,
-                                 boolean consumed) {
-        boolean flung = false;
-
-        if (!consumed) {
-            flung = fling(coordinatorLayout, child, -child.getTotalScrollRange(),
-                    0, -velocityY);
-        } else {
-            if (velocityY < 0) {
-                final int targetScroll =
-                        + child.getDownNestedPreScrollRange();
-                animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
-                flung = true;
-            } else {
-                final int targetScroll = -child.getUpNestedPreScrollRange();
-                if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
-                    animateOffsetTo(coordinatorLayout, child, targetScroll, velocityY);
-                    flung = true;
+    public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout abl, View target, int type) {
+        super.onStopNestedScroll(coordinatorLayout, abl, target, type);
+        if (type == TYPE_NON_TOUCH) {
+            if (mFlingAnimator != null) {
+                if (mFlingAnimator.isRunning()) {
+                    mFlingAnimator.cancel();
                 }
+                mFlingAnimator = null;
             }
         }
-
-        setWasNestedFlung(flung);
-        return flung;
-    }
-
-    private void setWasNestedFlung(boolean o) {
-        try {
-            Field field = AppBarLayout.Behavior.class.getDeclaredField("mWasNestedFlung");
-            field.setAccessible(true);
-            field.set(this, o);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        checkShouldSpringRecover(coordinatorLayout, abl);
     }
 
     private void checkShouldSpringRecover(CoordinatorLayout coordinatorLayout, AppBarLayout abl) {
         if (mOffsetSpring > 0) animateRecoverBySpring(coordinatorLayout, abl);
+    }
+
+    private void animateFlingSpring(final CoordinatorLayout coordinatorLayout, final AppBarLayout abl, int originNew) {
+        if (mFlingAnimator == null) {
+            mFlingAnimator = new ValueAnimator();
+            mFlingAnimator.setDuration(200);
+            mFlingAnimator.setInterpolator(new DecelerateInterpolator());
+            mFlingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    updateSpringHeaderHeight(coordinatorLayout, abl, (int) animation.getAnimatedValue());
+                }
+            });
+            mFlingAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    checkShouldSpringRecover(coordinatorLayout, abl);
+                }
+            });
+        } else {
+            if (mFlingAnimator.isRunning()) {
+                mFlingAnimator.cancel();
+            }
+        }
+        mFlingAnimator.setIntValues(mOffsetSpring, Math.min(mPreHeadHeight * 3 / 2, originNew));
+        mFlingAnimator.start();
     }
 
     private void animateRecoverBySpring(final CoordinatorLayout coordinatorLayout, final AppBarLayout abl) {
@@ -162,7 +152,6 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
 
     @Override
     void onFlingFinished(CoordinatorLayout parent, AppBarLayout layout) {
-        // At the end of a manual fling, check to see if we need to snap to the edge-child
         snapToChildIfNeeded(parent, layout);
         animateRecoverBySpring(parent, layout);
     }
@@ -267,6 +256,11 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     @Override
     int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
                                  AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset) {
+        return setHeaderTopBottomOffset(coordinatorLayout, appBarLayout, newOffset, minOffset, maxOffset, -1);
+    }
+
+    int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
+                                 AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset, int type) {
         int originNew = newOffset;
         final int curOffset = getTopBottomOffsetForScrollingSibling();
         int consumed = 0;
@@ -283,53 +277,55 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         }
 
         if (mOffsetSpring > 0 && appBarLayout.getHeight() >= mPreHeadHeight && newOffset > 0) {
-            updateSpringOffsetByscroll(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
-            consumed = getTopBottomOffsetForScrollingSibling() - originNew;
+            consumed = updateSpringByScroll(coordinatorLayout, appBarLayout, type, originNew);
             return consumed;
         }
 
         if (minOffset != 0 && curOffset >= minOffset && curOffset <= maxOffset) {
-            // If we have some scrolling range, and we're currently within the min and max
-            // offsets, calculate a new offset
-
             newOffset = MathUtils.clamp(newOffset, minOffset, maxOffset);
-
             if (curOffset != newOffset) {
                 final int interpolatedOffset = appBarLayout.hasChildWithInterpolator()
                         ? interpolateOffset(appBarLayout, newOffset)
                         : newOffset;
 
                 final boolean offsetChanged = setTopAndBottomOffset(interpolatedOffset);
-
-                // Update how much dy we have consumed
                 consumed = curOffset - newOffset;
-                // Update the stored sibling offset
                 mOffsetDelta = newOffset - interpolatedOffset;
-
                 if (!offsetChanged && appBarLayout.hasChildWithInterpolator()) {
-                    // If the offset hasn't changed and we're using an interpolated scroll
-                    // then we need to keep any dependent views updated. CoL will do this for
-                    // us when we move, but we need to do it manually when we don't (as an
-                    // interpolated scroll may finish early).
                     coordinatorLayout.dispatchDependentViewsChanged(appBarLayout);
                 }
-
-                // Dispatch the updates to any listeners
                 appBarLayout.dispatchOffsetUpdates(getTopAndBottomOffset());
-
-                // Update the AppBarLayout's drawable state (for any elevation changes)
                 updateAppBarLayoutDrawableState(coordinatorLayout, appBarLayout, newOffset,
-                        newOffset < curOffset ? -1 : 1);
+                        newOffset < curOffset ? -1 : 1, false);
             } else if (curOffset != minOffset) {
-                updateSpringOffsetByscroll(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
-                consumed = getTopBottomOffsetForScrollingSibling() - originNew;
+                consumed = updateSpringByScroll(coordinatorLayout, appBarLayout, type, originNew);
             }
         } else {
-            // Reset the offset delta
             mOffsetDelta = 0;
         }
+        return consumed;
+    }
+
+    private int updateSpringByScroll(CoordinatorLayout coordinatorLayout, AppBarLayout appBarLayout, int type, int originNew) {
+        int consumed;
+        if (appBarLayout.getHeight() >= mPreHeadHeight && type == 1) {
+            if (mFlingAnimator == null)
+                animateFlingSpring(coordinatorLayout, appBarLayout, originNew);
+            return originNew;
+        }
+        updateSpringOffsetByscroll(coordinatorLayout, appBarLayout, mOffsetSpring + originNew / 3);
+        consumed = getTopBottomOffsetForScrollingSibling() - originNew;
 
         return consumed;
+    }
+
+    private int getMaxSpringHeight() {
+        return mPreHeadHeight / 2;
+    }
+
+    @Override
+    int getTopBottomOffsetForScrollingSibling() {
+        return getTopAndBottomOffset() + mOffsetDelta;
     }
 
     private int interpolateOffset(AppBarLayout layout, final int offset) {
@@ -377,40 +373,6 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         }
 
         return offset;
-    }
-
-    private void updateAppBarLayoutDrawableState(final CoordinatorLayout parent,
-                                                 final AppBarLayout layout, final int offset, final int direction) {
-        final View child = getAppBarChildOnOffset(layout, offset);
-        if (child != null) {
-            final AppBarLayout.LayoutParams childLp = (AppBarLayout.LayoutParams) child.getLayoutParams();
-            final int flags = childLp.getScrollFlags();
-            boolean collapsed = false;
-
-            if ((flags & AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL) != 0) {
-                final int minHeight = ViewCompat.getMinimumHeight(child);
-
-                if (direction > 0 && (flags & (AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-                        | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED)) != 0) {
-                    // We're set to enter always collapsed so we are only collapsed when
-                    // being scrolled down, and in a collapsed offset
-                    collapsed = -offset >= child.getBottom() - minHeight - layout.getTopInset();
-                } else if ((flags & AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED) != 0) {
-                    // We're set to exit until collapsed, so any offset which results in
-                    // the minimum height (or less) being shown is collapsed
-                    collapsed = -offset >= child.getBottom() - minHeight - layout.getTopInset();
-                }
-            }
-
-            final boolean changed = layout.setCollapsedState(collapsed);
-
-            if (changed && Build.VERSION.SDK_INT >= 11
-                    && shouldJumpElevationState(parent, layout)) {
-                // If the collapsed state changed, we may need to
-                // jump to the current state if we have an overlapping view
-                layout.jumpDrawablesToCurrentState();
-            }
-        }
     }
 
     private boolean shouldJumpElevationState(CoordinatorLayout parent, AppBarLayout layout) {
@@ -472,6 +434,41 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     @VisibleForTesting
     boolean isOffsetAnimatorRunning() {
         return mOffsetAnimator != null && mOffsetAnimator.isRunning();
+    }
+
+    private void updateAppBarLayoutDrawableState(final CoordinatorLayout parent,
+                                                 final AppBarLayout layout, final int offset, final int direction,
+                                                 final boolean forceJump) {
+        final View child = getAppBarChildOnOffset(layout, offset);
+        if (child != null) {
+            final AppBarLayout.LayoutParams childLp = (AppBarLayout.LayoutParams) child.getLayoutParams();
+            final int flags = childLp.getScrollFlags();
+            boolean collapsed = false;
+
+            if ((flags & AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL) != 0) {
+                final int minHeight = ViewCompat.getMinimumHeight(child);
+
+                if (direction > 0 && (flags & (AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+                        | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED)) != 0) {
+                    // We're set to enter always collapsed so we are only collapsed when
+                    // being scrolled down, and in a collapsed offset
+                    collapsed = -offset >= child.getBottom() - minHeight - layout.getTopInset();
+                } else if ((flags & AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED) != 0) {
+                    // We're set to exit until collapsed, so any offset which results in
+                    // the minimum height (or less) being shown is collapsed
+                    collapsed = -offset >= child.getBottom() - minHeight - layout.getTopInset();
+                }
+            }
+
+            final boolean changed = layout.setCollapsedState(collapsed);
+
+            if (Build.VERSION.SDK_INT >= 11 && (forceJump
+                    || (changed && shouldJumpElevationState(parent, layout)))) {
+                // If the collapsed state changed, we may need to
+                // jump to the current state if we have an overlapping view
+                layout.jumpDrawablesToCurrentState();
+            }
+        }
     }
 
 }
