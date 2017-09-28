@@ -7,7 +7,7 @@ Screenshot
 ====
 First is with spring. Second with blur and TabScrimHelper.Third with fling fix  
 
-|H|H|H|
+|H|H|
 |---|---|
 |![](/screenshot/appbar_spring.gif)|![](/screenshot/appbar_spring_blur_tab.gif)|
 
