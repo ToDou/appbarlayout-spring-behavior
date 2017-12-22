@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.VisibleForTesting;
-import android.support.v4.math.MathUtils;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -196,7 +195,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
                         ? snapBottom
                         : snapTop;
                 animateOffsetTo(coordinatorLayout, abl,
-                        MathUtils.clamp(newOffset, -abl.getTotalScrollRange(), 0), 0);
+                        clamp(newOffset, -abl.getTotalScrollRange(), 0), 0);
             }
         }
     }
@@ -285,7 +284,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         }
 
         if (minOffset != 0 && curOffset >= minOffset && curOffset <= maxOffset) {
-            newOffset = MathUtils.clamp(newOffset, minOffset, maxOffset);
+            newOffset = clamp(newOffset, minOffset, maxOffset);
             if (curOffset != newOffset) {
                 final int interpolatedOffset = appBarLayout.hasChildWithInterpolator()
                         ? interpolateOffset(appBarLayout, newOffset)
@@ -470,4 +469,12 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         }
     }
 
+    private int clamp(int value, int min, int max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        }
+        return value;
+    }
 }
