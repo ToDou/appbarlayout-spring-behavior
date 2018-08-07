@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion configs.compileSdkVersion
-    buildToolsVersion configs.buildToolsVersion
 
     defaultConfig {
         applicationId "loopeer.com.appbarlayout_spring_extension"
