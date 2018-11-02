@@ -240,8 +240,8 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
             mOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animator) {
-                    setHeaderTopBottomOffset(child, coordinatorLayout, child,
-                            (Integer) animator.getAnimatedValue());
+                    setHeaderTopBottomOffset(coordinatorLayout, child,
+                            (Integer) animator.getAnimatedValue(), -2147483648, 2147483647);
                 }
             });
         } else {
@@ -268,8 +268,8 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return setHeaderTopBottomOffset(coordinatorLayout, appBarLayout, newOffset, minOffset, maxOffset, -1);
     }
 
-    int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
-                                 AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset, int type) {
+    private int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
+                                         AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset, int type) {
         int originNew = newOffset;
         final int curOffset = getTopBottomOffsetForScrollingSibling();
         int consumed = 0;
@@ -328,7 +328,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return consumed;
     }
 
-    int getTopBottomOffsetForScrollingSibling() {
+    private int getTopBottomOffsetForScrollingSibling() {
         return getTopAndBottomOffset() + mOffsetDelta;
     }
 
@@ -540,19 +540,4 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
             e.printStackTrace();
         }
     }
-
-
-    private void setHeaderTopBottomOffset(AppBarLayout appbar, CoordinatorLayout parent, View header, int newOffset) {
-        try {
-            Method invokeMethod = appbar.getClass().getDeclaredMethod("setHeaderTopBottomOffset"
-                    , CoordinatorLayout.class, View.class, int.class);
-            //压制Java对访问修饰符的检查
-            invokeMethod.setAccessible(true);
-            //调用方法;person为所在对象
-            invokeMethod.invoke(appbar, parent, header, newOffset);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
