@@ -1,4 +1,4 @@
-package androidx.material.widget;
+package com.google.android.material.appbar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

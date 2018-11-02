@@ -1,4 +1,4 @@
-<manifest package="androidx.material.widget">
+<manifest package="com.google.android.material">
 
     <application/>
 </manifest>

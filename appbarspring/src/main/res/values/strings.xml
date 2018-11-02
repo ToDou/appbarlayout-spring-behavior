@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AppbarSpring</string>
 
-    <string name="appbar_spring_behavior">androidx.material.widget.AppBarLayoutSpringBehavior</string>
+    <string name="appbar_spring_behavior">com.google.android.material.appbar.AppBarLayoutSpringBehavior</string>
 </resources>

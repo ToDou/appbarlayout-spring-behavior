@@ -1,8 +1,8 @@
 package loopeer.com.appbarlayout_spring_extension;
 
 import android.os.Bundle;
-import androidx.material.widget.AppBarLayoutSpringBehavior;
-import androidx.material.widget.TabScrimHelper;
+import com.google.android.material.appbar.AppBarLayoutSpringBehavior;
+import com.google.android.TabScrimHelper;
 
 import com.github.mmin18.widget.RealtimeBlurView;
 import com.google.android.material.appbar.AppBarLayout;
