@@ -17,6 +17,13 @@ Installation
 dependencies {
     compile 'com.github.todou:appbarspring:1.0.7'
 }
+
+
+如果你使用androidx(kotlin开发)则：
+dependencies {
+    compile 'com.github.todou:appbarspring:2.0.1'
+}
+
 ```
 Usages
 ====
