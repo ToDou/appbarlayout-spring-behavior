@@ -20,7 +20,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation libs.appcompatV7
+    implementation libs.appcompat
     implementation libs.design
 }
 
