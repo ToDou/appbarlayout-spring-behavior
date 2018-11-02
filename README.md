@@ -19,7 +19,7 @@ dependencies {
 }
 
 
-如果你使用androidx(kotlin开发)则：
+if you use androidx(kotlin)：
 dependencies {
     compile 'com.github.todou:appbarspring:2.0.1'
 }
