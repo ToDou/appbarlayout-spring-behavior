@@ -2,7 +2,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven'
 
-version = '1.0.7'
+version = '2.0.1'
 
 uploadArchives {
     repositories {
@@ -33,9 +33,9 @@ install {
                 }
                 developers {
                     developer {
-                        id 'ToDou'       //填写开发者基本信息
-                        name 'ToDou'
-                        email 'yytodou123@gmail.com'
+                        id 'Pinger'       //填写开发者基本信息
+                        name 'Pinger'
+                        email 'wanitme@gmail.com'
                     }
                 }
                 scm {

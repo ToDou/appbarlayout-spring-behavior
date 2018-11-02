@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion configs.compileSdkVersion
@@ -32,6 +34,7 @@ dependencies {
     implementation project(':appbarspring')
     implementation 'com.github.mmin18:realtimeblurview:1.0.4'
     implementation libs.appcompat
-    implementation libs.design
+    implementation libs.material
+    implementation libs.kotlin
 
 }

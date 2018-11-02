@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion configs.compileSdkVersion
@@ -21,7 +22,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation libs.appcompat
-    implementation libs.design
+    implementation libs.material
+    implementation libs.kotlin
 }
 
 apply from: 'bintray.gradle'
