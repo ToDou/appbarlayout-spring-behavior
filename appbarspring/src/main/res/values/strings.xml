@@ -2,5 +2,4 @@
     <string name="app_name">AppbarSpring</string>
 
     <string name="appbar_spring_behavior">androidx.material.widget.AppBarLayoutSpringBehavior</string>
-    <string name="appbar_fling_fix_behavior">androidx.material.widget.AppBarFlingFixBehavior</string>
 </resources>

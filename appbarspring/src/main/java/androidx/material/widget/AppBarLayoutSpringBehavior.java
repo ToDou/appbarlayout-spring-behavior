@@ -159,7 +159,9 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return Math.max(0, range);
     }
 
+
     void onFlingFinished(CoordinatorLayout parent, AppBarLayout layout) {
+        System.out.println("-------> onFlingFinished");
         snapToChildIfNeeded(parent, layout);
         animateRecoverBySpring(parent, layout);
     }
