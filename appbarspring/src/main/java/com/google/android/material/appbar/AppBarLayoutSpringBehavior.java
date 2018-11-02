@@ -11,9 +11,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.google.android.material.animation.AnimationUtils;
-import com.google.android.material.appbar.AppBarLayout;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import androidx.annotation.VisibleForTesting;
@@ -21,6 +19,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 
 import static androidx.core.view.ViewCompat.TYPE_NON_TOUCH;
+
 
 public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private static final String TAG = "SpringBehav";
@@ -69,7 +68,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         if (dyUnconsumed < 0) {
             setHeaderTopBottomOffset(coordinatorLayout, child,
-                    getTopBottomOffsetForScrollingSibling() - dyUnconsumed, -getDownNestedScrollRange(child), 0, type);
+                    getTopBottomOffsetForScrollingSibling() - dyUnconsumed, -child.getDownNestedScrollRange(), 0, type);
         }
     }
 
@@ -159,9 +158,8 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return Math.max(0, range);
     }
 
-
+    @Override
     void onFlingFinished(CoordinatorLayout parent, AppBarLayout layout) {
-        System.out.println("-------> onFlingFinished");
         snapToChildIfNeeded(parent, layout);
         animateRecoverBySpring(parent, layout);
     }
@@ -174,20 +172,20 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
             final AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) offsetChild.getLayoutParams();
             final int flags = lp.getScrollFlags();
 
-            if ((flags & 17) == 17) {
+            if ((flags & AppBarLayout.LayoutParams.FLAG_SNAP) == AppBarLayout.LayoutParams.FLAG_SNAP) {
                 // We're set the snap, so animate the offset to the nearest edge
                 int snapTop = -offsetChild.getTop();
                 int snapBottom = -offsetChild.getBottom();
 
                 if (offsetChildIndex == abl.getChildCount() - 1) {
                     // If this is the last child, we need to take the top inset into account
-                    snapBottom += getTopInset(abl);
+                    snapBottom += abl.getTopInset();
                 }
 
                 if (checkFlag(flags, AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED)) {
                     // If the view is set only exit until it is collapsed, we'll abide by that
                     snapBottom += ViewCompat.getMinimumHeight(offsetChild);
-                } else if (checkFlag(flags, 5
+                } else if (checkFlag(flags, AppBarLayout.LayoutParams.FLAG_QUICK_RETURN
                         | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)) {
                     // If it's set to always enter collapsed, it actually has two states. We
                     // select the state and then snap within the state
@@ -241,7 +239,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animator) {
                     setHeaderTopBottomOffset(coordinatorLayout, child,
-                            (Integer) animator.getAnimatedValue(), -2147483648, 2147483647);
+                            (Integer) animator.getAnimatedValue());
                 }
             });
         } else {
@@ -263,13 +261,14 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return -1;
     }
 
+    @Override
     int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
                                  AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset) {
         return setHeaderTopBottomOffset(coordinatorLayout, appBarLayout, newOffset, minOffset, maxOffset, -1);
     }
 
-    private int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
-                                         AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset, int type) {
+    int setHeaderTopBottomOffset(CoordinatorLayout coordinatorLayout,
+                                 AppBarLayout appBarLayout, int newOffset, int minOffset, int maxOffset, int type) {
         int originNew = newOffset;
         final int curOffset = getTopBottomOffsetForScrollingSibling();
         int consumed = 0;
@@ -293,17 +292,17 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         if (minOffset != 0 && curOffset >= minOffset && curOffset <= maxOffset) {
             newOffset = clamp(newOffset, minOffset, maxOffset);
             if (curOffset != newOffset) {
-                final int interpolatedOffset = hasChildWithInterpolator(appBarLayout)
+                final int interpolatedOffset = appBarLayout.hasChildWithInterpolator()
                         ? interpolateOffset(appBarLayout, newOffset)
                         : newOffset;
 
                 final boolean offsetChanged = setTopAndBottomOffset(interpolatedOffset);
                 consumed = curOffset - newOffset;
                 mOffsetDelta = newOffset - interpolatedOffset;
-                if (!offsetChanged && hasChildWithInterpolator(appBarLayout)) {
+                if (!offsetChanged && appBarLayout.hasChildWithInterpolator()) {
                     coordinatorLayout.dispatchDependentViewsChanged(appBarLayout);
                 }
-                dispatchOffsetUpdates(appBarLayout, getTopAndBottomOffset());
+                appBarLayout.dispatchOffsetUpdates(getTopAndBottomOffset());
                 updateAppBarLayoutDrawableState(coordinatorLayout, appBarLayout, newOffset,
                         newOffset < curOffset ? -1 : 1, false);
             } else if (curOffset != minOffset) {
@@ -328,7 +327,8 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return consumed;
     }
 
-    private int getTopBottomOffsetForScrollingSibling() {
+    @Override
+    int getTopBottomOffsetForScrollingSibling() {
         return getTopAndBottomOffset() + mOffsetDelta;
     }
 
@@ -357,7 +357,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
                     }
 
                     if (ViewCompat.getFitsSystemWindows(child)) {
-                        childScrollableHeight -= getTopInset(layout);
+                        childScrollableHeight -= layout.getTopInset();
                     }
 
                     if (childScrollableHeight > 0) {
@@ -456,15 +456,15 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
                         | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED)) != 0) {
                     // We're set to enter always collapsed so we are only collapsed when
                     // being scrolled down, and in a collapsed offset
-                    collapsed = -offset >= child.getBottom() - minHeight - getTopInset(layout);
+                    collapsed = -offset >= child.getBottom() - minHeight - layout.getTopInset();
                 } else if ((flags & AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED) != 0) {
                     // We're set to exit until collapsed, so any offset which results in
                     // the minimum height (or less) being shown is collapsed
-                    collapsed = -offset >= child.getBottom() - minHeight - getTopInset(layout);
+                    collapsed = -offset >= child.getBottom() - minHeight - layout.getTopInset();
                 }
             }
 
-            final boolean changed = setLiftedState(layout, collapsed);
+            final boolean changed = layout.setLiftedState(collapsed);
 
             if (Build.VERSION.SDK_INT >= 11 && (forceJump
                     || (changed && shouldJumpElevationState(parent, layout)))) {
@@ -482,62 +482,5 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
             return max;
         }
         return value;
-
-    }
-
-
-    private int getTopInset(AppBarLayout appbar) {
-        try {
-            Method invokeMethod = appbar.getClass().getDeclaredMethod("getTopInset");
-            invokeMethod.setAccessible(true);
-            return (int) invokeMethod.invoke(appbar);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    private int getDownNestedScrollRange(AppBarLayout appbar) {
-        try {
-            Method invokeMethod = appbar.getClass().getDeclaredMethod("getDownNestedScrollRange");
-            invokeMethod.setAccessible(true);
-            return (int) invokeMethod.invoke(appbar);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    private boolean hasChildWithInterpolator(AppBarLayout appbar) {
-        try {
-            Method invokeMethod = appbar.getClass().getDeclaredMethod("hasChildWithInterpolator");
-            invokeMethod.setAccessible(true);
-            return (boolean) invokeMethod.invoke(appbar);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
-    private boolean setLiftedState(AppBarLayout appbar, boolean lifted) {
-        try {
-            Method invokeMethod = appbar.getClass().getDeclaredMethod("setLiftedState", boolean.class);
-            invokeMethod.setAccessible(true);
-            return (boolean) invokeMethod.invoke(appbar, lifted);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private void dispatchOffsetUpdates(AppBarLayout appbar, int offset) {
-        try {
-            Method invokeMethod = appbar.getClass().getDeclaredMethod("dispatchOffsetUpdates", int.class);
-            invokeMethod.setAccessible(true);
-            invokeMethod.invoke(appbar, offset);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
