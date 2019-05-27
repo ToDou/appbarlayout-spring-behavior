@@ -1,12 +1,15 @@
-package android.support.design.widget;
+package com.google.android.material.appbar;
 
 
 import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.renderscript.Sampler;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v4.view.ViewCompat;
+
+import androidx.core.graphics.ColorUtils;
+import androidx.core.view.ViewCompat;
+
+import com.google.android.material.animation.AnimationUtils;
+import com.google.android.material.tabs.TabLayout;
 
 public class TabScrimHelper implements AppBarLayout.OnOffsetChangedListener {
     private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;

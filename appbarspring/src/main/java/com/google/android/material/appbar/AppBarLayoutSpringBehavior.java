@@ -1,19 +1,25 @@
-package android.support.design.widget;
+package com.google.android.material.appbar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.VisibleForTesting;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+
+import com.google.android.material.animation.AnimationUtils;
+import com.google.android.material.appbar.AppBarLayout;
+
 import java.util.List;
 
-import static android.support.v4.view.ViewCompat.TYPE_NON_TOUCH;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import static androidx.core.view.ViewCompat.TYPE_NON_TOUCH;
 
 public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     private static final String TAG = "SpringBehav";
@@ -432,6 +438,36 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
     @VisibleForTesting
     boolean isOffsetAnimatorRunning() {
         return mOffsetAnimator != null && mOffsetAnimator.isRunning();
+    }
+
+    private void updateAppBarLayoutDrawableState(CoordinatorLayout parent, T layout, int offset, int direction, boolean forceJump) {
+        View child = getAppBarChildOnOffset(layout, offset);
+        if (child != null) {
+            AppBarLayout.LayoutParams childLp = (AppBarLayout.LayoutParams)child.getLayoutParams();
+            int flags = childLp.getScrollFlags();
+            boolean lifted = false;
+            if ((flags & 1) != 0) {
+                int minHeight = ViewCompat.getMinimumHeight(child);
+                if (direction > 0 && (flags & 12) != 0) {
+                    lifted = -offset >= child.getBottom() - minHeight - layout.getTopInset();
+                } else if ((flags & 2) != 0) {
+                    lifted = -offset >= child.getBottom() - minHeight - layout.getTopInset();
+                }
+            }
+
+            if (layout.isLiftOnScroll()) {
+                View scrollingChild = this.findFirstScrollingChild(parent);
+                if (scrollingChild != null) {
+                    lifted = scrollingChild.getScrollY() > 0;
+                }
+            }
+
+            boolean changed = layout.setLiftedState(lifted);
+            if (Build.VERSION.SDK_INT >= 11 && (forceJump || changed && this.shouldJumpElevationState(parent, layout))) {
+                layout.jumpDrawablesToCurrentState();
+            }
+        }
+
     }
 
     private void updateAppBarLayoutDrawableState(final CoordinatorLayout parent,

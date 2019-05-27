@@ -9,7 +9,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha18'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
@@ -38,14 +38,14 @@ ext {
             versionName      : '1.0.0',
     ]
 
-    supportLibraryVersion = '27.1.1'
+    supportLibraryVersion = '1.0.0-beta01'
 
     flexboxVersion = '0.3.0'
 
-    libs = [appcompatV7     : "com.android.support:appcompat-v7:$supportLibraryVersion",
-            supportV4       : "com.android.support:support-v4:$supportLibraryVersion",
-            recyclerView    : "com.android.support:recyclerview-v7:$supportLibraryVersion",
-            cardview        : "com.android.support:cardview-v7:$supportLibraryVersion",
-            design          : "com.android.support:design:$supportLibraryVersion"
+    libs = [appcompatV7     : "androidx.appcompat:appcompat:$supportLibraryVersion",
+            supportV4       : "androidx.legacy:legacy-support-v4:$supportLibraryVersion",
+            recyclerView    : "androidx.recyclerview:recyclerview:$supportLibraryVersion",
+            cardview        : "androidx.cardview:cardview:$supportLibraryVersion",
+            design          : "com.google.android.material:material:$supportLibraryVersion"
     ]
 }
