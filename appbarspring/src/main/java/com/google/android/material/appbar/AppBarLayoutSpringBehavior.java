@@ -13,7 +13,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.google.android.material.animation.AnimationUtils;
-import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.List;
 
@@ -440,36 +439,6 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
         return mOffsetAnimator != null && mOffsetAnimator.isRunning();
     }
 
-    private void updateAppBarLayoutDrawableState(CoordinatorLayout parent, T layout, int offset, int direction, boolean forceJump) {
-        View child = getAppBarChildOnOffset(layout, offset);
-        if (child != null) {
-            AppBarLayout.LayoutParams childLp = (AppBarLayout.LayoutParams)child.getLayoutParams();
-            int flags = childLp.getScrollFlags();
-            boolean lifted = false;
-            if ((flags & 1) != 0) {
-                int minHeight = ViewCompat.getMinimumHeight(child);
-                if (direction > 0 && (flags & 12) != 0) {
-                    lifted = -offset >= child.getBottom() - minHeight - layout.getTopInset();
-                } else if ((flags & 2) != 0) {
-                    lifted = -offset >= child.getBottom() - minHeight - layout.getTopInset();
-                }
-            }
-
-            if (layout.isLiftOnScroll()) {
-                View scrollingChild = this.findFirstScrollingChild(parent);
-                if (scrollingChild != null) {
-                    lifted = scrollingChild.getScrollY() > 0;
-                }
-            }
-
-            boolean changed = layout.setLiftedState(lifted);
-            if (Build.VERSION.SDK_INT >= 11 && (forceJump || changed && this.shouldJumpElevationState(parent, layout))) {
-                layout.jumpDrawablesToCurrentState();
-            }
-        }
-
-    }
-
     private void updateAppBarLayoutDrawableState(final CoordinatorLayout parent,
                                                  final AppBarLayout layout, final int offset, final int direction,
                                                  final boolean forceJump) {
@@ -494,7 +463,7 @@ public class AppBarLayoutSpringBehavior extends AppBarLayout.Behavior {
                 }
             }
 
-            final boolean changed = layout.setCollapsedState(collapsed);
+            final boolean changed = layout.setLiftedState(collapsed);
 
             if (Build.VERSION.SDK_INT >= 11 && (forceJump
                     || (changed && shouldJumpElevationState(parent, layout)))) {

@@ -38,7 +38,7 @@ ext {
             versionName      : '1.0.0',
     ]
 
-    supportLibraryVersion = '1.0.0-beta01'
+    supportLibraryVersion = '1.0.0'
 
     flexboxVersion = '0.3.0'
 
