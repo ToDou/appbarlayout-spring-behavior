@@ -30,7 +30,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':appbarspring')
-    implementation 'com.github.mmin18:realtimeblurview:1.0.4'
+    implementation 'com.github.mmin18:realtimeblurview:1.2.1'
     implementation libs.appcompatV7
     implementation libs.design
 
