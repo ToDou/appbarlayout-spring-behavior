@@ -4,7 +4,7 @@ package android.support.design.widget;
 import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.renderscript.Sampler;
+import android.support.design.animation.AnimationUtils;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 
