@@ -15,16 +15,14 @@ Installation
 ====
 ```groovy
 dependencies {
-    compile 'com.github.todou:appbarspring:1.0.7'
+    compile 'com.github.todou:appbarspring:1.0.x'
 }
 ```
-AndroidX
-
-```groovy
-dependencies {
-    compile 'com.github.todou:appbarspring:1.0.8'
-}
-```
+|des|version|branch|
+|---|---|---|
+|supportpre|1.0.7|master|
+|support28|1.0.9|support28|
+|androidx|1.0.8|androidx|
 Usages
 ====
 #### AppBarLayout-Spring
