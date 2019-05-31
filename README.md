@@ -13,9 +13,10 @@ First is with spring. Second with blur and TabScrimHelper.
 
 Installation
 ====
+support28
 ```groovy
 dependencies {
-    compile 'com.github.todou:appbarspring:1.0.7'
+    compile 'com.github.todou:appbarspring:1.0.9'
 }
 ```
 Usages
